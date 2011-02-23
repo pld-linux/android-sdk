@@ -3,13 +3,13 @@
 %include	/usr/lib/rpm/macros.java
 Summary:	The Android SDK has all you need to create great apps to Android
 Name:		android-sdk
-Version:	r07
-Release:	0.3
+Version:	r10
+Release:	0.1
 License:	Apache v2.0
 Group:		Development/Languages/Java
 URL:		http://developer.android.com/sdk/
 Source0:	http://dl.google.com/android/%{name}_%{version}-linux_x86.tgz
-# NoSource0-md5:	e10c75da3d1aa147ddd4a5c58bfc3646
+# NoSource0-md5:	
 NoSource:	0
 BuildRequires:	jpackage-utils
 BuildRequires:	rpm-javaprov
@@ -44,7 +44,6 @@ cp -a add-ons platforms tools $RPM_BUILD_ROOT%{_appdir}
 # installer downloads files there
 install -d $RPM_BUILD_ROOT%{_appdir}/temp
 
-ln -s %{_appdir}/tools/adb $RPM_BUILD_ROOT%{_bindir}/adb
 ln -s %{_appdir}/tools/ddms $RPM_BUILD_ROOT%{_bindir}/ddms
 ln -s %{_appdir}/tools/android $RPM_BUILD_ROOT%{_bindir}/android
 
@@ -54,7 +53,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc SDK\ Readme.txt
-%attr(755,root,root) %{_bindir}/adb
 %attr(755,root,root) %{_bindir}/ddms
 %attr(755,root,root) %{_bindir}/android
 %dir %{_appdir}
@@ -86,7 +84,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/tools/NOTICE.txt
 %{_appdir}/tools/source.properties
 
-%attr(755,root,root) %{_appdir}/tools/adb
 %attr(755,root,root) %{_appdir}/tools/android
 %attr(755,root,root) %{_appdir}/tools/apkbuilder
 %attr(755,root,root) %{_appdir}/tools/ddms
