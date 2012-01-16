@@ -3,13 +3,13 @@
 %include	/usr/lib/rpm/macros.java
 Summary:	The Android SDK has all you need to create great apps to Android
 Name:		android-sdk
-Version:	r10
+Version:	r16
 Release:	0.1
 License:	Apache v2.0
 Group:		Development/Languages/Java
 URL:		http://developer.android.com/sdk/
-Source0:	http://dl.google.com/android/%{name}_%{version}-linux_x86.tgz
-# NoSource0-md5:	
+Source0:	http://dl.google.com/android/%{name}_%{version}-linux.tgz
+# Source0-md5:	3ba457f731d51da3741c29c8830a4583
 NoSource:	0
 BuildRequires:	jpackage-utils
 BuildRequires:	rpm-javaprov
@@ -25,7 +25,7 @@ The Android SDK has the tools, sample code, and docs you need to
 create great apps in Android Platform.
 
 %prep
-%setup -q -n %{name}-linux_x86
+%setup -q -n %{name}-linux
 
 %ifnarch %{ix86}
 rm -rf tools/lib/x86
@@ -59,6 +59,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_appdir}/add-ons
 %dir %{_appdir}/tools
 %dir %{_appdir}/tools/lib
+%dir %{_appdir}/tools/lib/pc-bios
+%dir %{_appdir}/tools/proguard
+%dir %{_appdir}/tools/proguard/lib
+%dir %{_appdir}/tools/proguard/bin
+%dir %{_appdir}/tools/apps
 
 # attrs like /tmp so user could add new files there which aren't system pkgs (yet)
 %dir %attr(1777,root,root) %{_appdir}/platforms
@@ -75,11 +80,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/tools/lib/x86_64/swt.jar
 %endif
 %{_appdir}/tools/lib/android.el
-%{_appdir}/tools/lib/build.export.template
 %{_appdir}/tools/lib/build.template
 %{_appdir}/tools/lib/devices.xml
 %{_appdir}/tools/lib/hardware-properties.ini
 %{_appdir}/tools/lib/plugin.prop
+%{_appdir}/tools/lib/libEGL_translator.so
+%{_appdir}/tools/lib/libGLES_CM_translator.so
+%{_appdir}/tools/lib/libGLES_V2_translator.so
+%{_appdir}/tools/lib/libOpenglRender.so
+%{_appdir}/tools/lib/pc-bios/bios.bin
+%{_appdir}/tools/lib/pc-bios/vgabios-cirrus.bin
+%{_appdir}/tools/lib/proguard.cfg
+%{_appdir}/tools/lib/emulator/snapshots.img
 
 %{_appdir}/tools/NOTICE.txt
 %{_appdir}/tools/source.properties
@@ -90,11 +102,21 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_appdir}/tools/dmtracedump
 %attr(755,root,root) %{_appdir}/tools/draw9patch
 %attr(755,root,root) %{_appdir}/tools/emulator
+%attr(755,root,root) %{_appdir}/tools/emulator-arm
+%attr(755,root,root) %{_appdir}/tools/emulator-x86
 %attr(755,root,root) %{_appdir}/tools/etc1tool
 %attr(755,root,root) %{_appdir}/tools/hierarchyviewer
 %attr(755,root,root) %{_appdir}/tools/hprof-conv
-%attr(755,root,root) %{_appdir}/tools/layoutopt
+%attr(755,root,root) %{_appdir}/tools/lint
 %attr(755,root,root) %{_appdir}/tools/mksdcard
+%attr(755,root,root) %{_appdir}/tools/monkeyrunner
 %attr(755,root,root) %{_appdir}/tools/sqlite3
 %attr(755,root,root) %{_appdir}/tools/traceview
 %attr(755,root,root) %{_appdir}/tools/zipalign
+%attr(755,root,root) %{_appdir}/tools/proguard/bin/proguard.sh
+%attr(755,root,root) %{_appdir}/tools/proguard/bin/proguardgui.sh
+%attr(755,root,root) %{_appdir}/tools/proguard/bin/retrace.sh
+%{_appdir}/tools/proguard/ant/task.properties
+%{_appdir}/tools/proguard/lib/*.jar
+
+%{_appdir}/tools/apps/SdkController
