@@ -60,9 +60,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_appdir}/tools
 %dir %{_appdir}/tools/lib
 %dir %{_appdir}/tools/lib/pc-bios
+%dir %{_appdir}/tools/lib/emulator
 %dir %{_appdir}/tools/proguard
 %dir %{_appdir}/tools/proguard/lib
 %dir %{_appdir}/tools/proguard/bin
+%dir %{_appdir}/tools/proguard/ant
 %dir %{_appdir}/tools/apps
 
 # attrs like /tmp so user could add new files there which aren't system pkgs (yet)
