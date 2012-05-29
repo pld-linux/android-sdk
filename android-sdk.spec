@@ -3,13 +3,13 @@
 %include	/usr/lib/rpm/macros.java
 Summary:	The Android SDK has all you need to create great apps to Android
 Name:		android-sdk
-Version:	r16
+Version:	r18
 Release:	0.1
 License:	Apache v2.0
 Group:		Development/Languages/Java
 URL:		http://developer.android.com/sdk/
 Source0:	http://dl.google.com/android/%{name}_%{version}-linux.tgz
-# Source0-md5:	3ba457f731d51da3741c29c8830a4583
+# Source0-md5:	6cd716d0e04624b865ffed3c25b3485c
 NoSource:	0
 BuildRequires:	jpackage-utils
 BuildRequires:	rpm-javaprov
@@ -92,7 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/tools/lib/libOpenglRender.so
 %{_appdir}/tools/lib/pc-bios/bios.bin
 %{_appdir}/tools/lib/pc-bios/vgabios-cirrus.bin
-%{_appdir}/tools/lib/proguard.cfg
+#%{_appdir}/tools/lib/proguard.cfg
 %{_appdir}/tools/lib/emulator/snapshots.img
 
 %{_appdir}/tools/NOTICE.txt
