@@ -2,15 +2,20 @@
 # - cleanups, system pkgs, system libs, what to package afterall?
 # - what's the license, distributable?
 # - adb can be found from eclipse-adt (adt-bundle-linux-x86_64-20140702/sdk/platform-tools)
+#   in pld packaged in android-tools
+# - download build tools, etc
+#   http://dl.google.com/android/repository/build-tools_r22-linux.zip
+#   http://dl.google.com/android/repository/tools_r24.1.2-linux.zip
+#   http://dl.google.com/android/repository/platform-tools_r22-linux.zip
 %include	/usr/lib/rpm/macros.java
 Summary:	The Android SDK has all you need to create great apps to Android
 Name:		android-sdk
-Version:	23.0.2
-Release:	0.1
+Version:	24.3.3
+Release:	0.2
 License:	?
 Group:		Development/Building
 Source0:	http://dl.google.com/android/%{name}_r%{version}-linux.tgz
-# Source0-md5:	94a8c62086a7398cc0e73e1c8e65f71e
+# Source0-md5:	a673e69ded991f4befcf798e18290d7a
 NoSource:	0
 URL:		http://developer.android.com/sdk/
 BuildRequires:	jpackage-utils
@@ -22,21 +27,32 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_appdir		%{_libdir}/%{name}
 
+# disable debug packages, because of stupid debugedit errors:
+# debugedit: canonicalization unexpectedly shrank by one character
+%define		_enable_debug_packages	0
+
 %description
 The Android SDK provides you the API libraries and developer tools
 necessary to build, test, and debug apps for Android.
+
+This package provides the basic SDK tools for app development, without
+an IDE.
 
 %prep
 %setup -qc
 mv %{name}-linux/* .
 
 %ifnarch %{ix86}
-rm -rf tools/lib/x86
-rm -rf tools/lib/monitor-x86
+rm -r tools/lib/x86
+rm -r tools/lib/monitor-x86
+rm -r tools/lib/gles_mesa
+rm -r tools/qemu/linux-x86
+rm tools/lib/lib*.so
 %endif
 %ifnarch %{x8664}
-rm -rf tools/lib/
-rm -rf tools/lib/monitor-x86_64
+rm -r tools/lib/monitor-x86_64
+rm -r tools/lib64/gles_mesa
+rm -r tools/qemu/linux-x86_64
 %endif
 
 %install
@@ -77,30 +93,51 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_appdir}/tools/ant
 %{_appdir}/tools/lib/*.jar
+
+%dir %{_appdir}/tools/qemu
 %ifarch %{ix86}
 %dir %{_appdir}/tools/lib/x86
 %{_appdir}/tools/lib/monitor-x86
 %{_appdir}/tools/lib/x86/swt.jar
+%dir %{_appdir}/tools/lib/gles_mesa
+%attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libGL.so
+%attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libGL.so.1
+%attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libosmesa.so
+%attr(755,root,root) %{_appdir}/tools/lib/libemugl_test_shared_library.so
+%dir %{_appdir}/tools/qemu/linux-x86
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-aarch64
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-mips64el
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-x86_64
 %endif
 %ifarch %{x8664}
 %dir %{_appdir}/tools/lib/x86_64
 %{_appdir}/tools/lib/monitor-x86_64
 %{_appdir}/tools/lib/x86_64/swt.jar
-%attr(755,root,root) %{_appdir}/tools/lib/lib64EGL_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib/lib64GLES_CM_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib/lib64GLES_V2_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib/lib64OpenglRender.so
+%dir %{_appdir}/tools/lib64
+%dir %{_appdir}/tools/lib64/gles_mesa
+%attr(755,root,root) %{_appdir}/tools/lib64/gles_mesa/libGL.so
+%attr(755,root,root) %{_appdir}/tools/lib64/gles_mesa/libGL.so.1
+%attr(755,root,root) %{_appdir}/tools/lib64/gles_mesa/libosmesa.so
+%attr(755,root,root) %{_appdir}/tools/lib64/lib64EGL_translator.so
+%attr(755,root,root) %{_appdir}/tools/lib64/lib64GLES_CM_translator.so
+%attr(755,root,root) %{_appdir}/tools/lib64/lib64GLES_V2_translator.so
+%attr(755,root,root) %{_appdir}/tools/lib64/lib64OpenglRender.so
+%attr(755,root,root) %{_appdir}/tools/lib64/lib64emugl_test_shared_library.so
+%dir %{_appdir}/tools/qemu/linux-x86_64
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86_64/qemu-system-aarch64
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86_64/qemu-system-mips64el
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86_64/qemu-system-x86_64
 %endif
 %{_appdir}/tools/lib/android.el
 %{_appdir}/tools/lib/build.template
 %{_appdir}/tools/lib/devices.xml
 %{_appdir}/tools/lib/hardware-properties.ini
 %{_appdir}/tools/lib/plugin.prop
-
-%attr(755,root,root) %{_appdir}/tools/lib/libEGL_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib/libGLES_CM_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib/libGLES_V2_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib/libOpenglRender.so
+#
+#%attr(755,root,root) %{_appdir}/tools/lib/libEGL_translator.so
+#%attr(755,root,root) %{_appdir}/tools/lib/libGLES_CM_translator.so
+#%attr(755,root,root) %{_appdir}/tools/lib/libGLES_V2_translator.so
+#%attr(755,root,root) %{_appdir}/tools/lib/libOpenglRender.so
 
 %{_appdir}/tools/lib/build_gradle.template
 %{_appdir}/tools/lib/emulator/skins
@@ -139,9 +176,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_appdir}/tools/emulator
 %attr(755,root,root) %{_appdir}/tools/emulator-arm
 %attr(755,root,root) %{_appdir}/tools/emulator-mips
+%attr(755,root,root) %{_appdir}/tools/emulator-ranchu-arm64
+%attr(755,root,root) %{_appdir}/tools/emulator-ranchu-mips64
 %attr(755,root,root) %{_appdir}/tools/emulator-x86
 %attr(755,root,root) %{_appdir}/tools/emulator64-arm
 %attr(755,root,root) %{_appdir}/tools/emulator64-mips
+%attr(755,root,root) %{_appdir}/tools/emulator64-ranchu-arm64
+%attr(755,root,root) %{_appdir}/tools/emulator64-ranchu-mips64
 %attr(755,root,root) %{_appdir}/tools/emulator64-x86
 
 %attr(755,root,root) %{_appdir}/tools/proguard/bin/proguard.sh
