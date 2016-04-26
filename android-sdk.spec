@@ -11,7 +11,7 @@
 Summary:	The Android SDK has all you need to create great apps to Android
 Name:		android-sdk
 Version:	24.3.3
-Release:	0.2
+Release:	0.4
 License:	?
 Group:		Development/Building
 Source0:	http://dl.google.com/android/%{name}_r%{version}-linux.tgz
@@ -46,13 +46,15 @@ mv %{name}-linux/* .
 rm -r tools/lib/x86
 rm -r tools/lib/monitor-x86
 rm -r tools/lib/gles_mesa
-rm -r tools/qemu/linux-x86
 rm tools/lib/lib*.so
+rm -r tools/qemu/linux-x86
 %endif
 %ifnarch %{x8664}
 rm -r tools/lib/monitor-x86_64
-rm -r tools/lib64/gles_mesa
+rm -r tools/lib/x86_64
+rm -r tools/lib64
 rm -r tools/qemu/linux-x86_64
+rm tools/emulator64-*
 %endif
 
 %install
@@ -103,7 +105,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libGL.so
 %attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libGL.so.1
 %attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libosmesa.so
-%attr(755,root,root) %{_appdir}/tools/lib/libemugl_test_shared_library.so
 %dir %{_appdir}/tools/qemu/linux-x86
 %attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-aarch64
 %attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-mips64el
@@ -133,11 +134,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/tools/lib/devices.xml
 %{_appdir}/tools/lib/hardware-properties.ini
 %{_appdir}/tools/lib/plugin.prop
-#
-#%attr(755,root,root) %{_appdir}/tools/lib/libEGL_translator.so
-#%attr(755,root,root) %{_appdir}/tools/lib/libGLES_CM_translator.so
-#%attr(755,root,root) %{_appdir}/tools/lib/libGLES_V2_translator.so
-#%attr(755,root,root) %{_appdir}/tools/lib/libOpenglRender.so
+
+%if "%{_lib}" != "lib"
+%dir %{_appdir}/tools/%{_lib}
+%endif
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/libEGL_translator.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/libGLES_CM_translator.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/libGLES_V2_translator.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/libOpenglRender.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/libemugl_test_shared_library.so
 
 %{_appdir}/tools/lib/build_gradle.template
 %{_appdir}/tools/lib/emulator/skins
@@ -173,17 +178,21 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_appdir}/tools/traceview
 %attr(755,root,root) %{_appdir}/tools/uiautomatorviewer
 
+%ifarch %{ix86}
 %attr(755,root,root) %{_appdir}/tools/emulator
 %attr(755,root,root) %{_appdir}/tools/emulator-arm
 %attr(755,root,root) %{_appdir}/tools/emulator-mips
 %attr(755,root,root) %{_appdir}/tools/emulator-ranchu-arm64
 %attr(755,root,root) %{_appdir}/tools/emulator-ranchu-mips64
 %attr(755,root,root) %{_appdir}/tools/emulator-x86
+%endif
+%ifarch %{x8664}
 %attr(755,root,root) %{_appdir}/tools/emulator64-arm
 %attr(755,root,root) %{_appdir}/tools/emulator64-mips
 %attr(755,root,root) %{_appdir}/tools/emulator64-ranchu-arm64
 %attr(755,root,root) %{_appdir}/tools/emulator64-ranchu-mips64
 %attr(755,root,root) %{_appdir}/tools/emulator64-x86
+%endif
 
 %attr(755,root,root) %{_appdir}/tools/proguard/bin/proguard.sh
 %attr(755,root,root) %{_appdir}/tools/proguard/bin/proguardgui.sh
