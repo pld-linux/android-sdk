@@ -25,6 +25,13 @@ BuildRequires:	unzip
 ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%ifarch %{ix86}
+%define		arch	x86
+%endif
+%ifarch %{x8664}
+%define		arch	x86_64
+%endif
+
 %define		_appdir		%{_libdir}/%{name}
 
 # disable debug packages, because of stupid debugedit errors:
@@ -43,11 +50,13 @@ an IDE.
 mv %{name}-linux/* .
 
 %ifnarch %{ix86}
-rm -r tools/lib/x86
-rm -r tools/lib/monitor-x86
 rm -r tools/lib/gles_mesa
-rm tools/lib/lib*.so
+rm -r tools/lib/monitor-x86
+rm -r tools/lib/x86
 rm -r tools/qemu/linux-x86
+rm tools/emulator
+rm tools/emulator-*
+rm tools/lib/lib*.so
 %endif
 %ifnarch %{x8664}
 rm -r tools/lib/monitor-x86_64
@@ -97,38 +106,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_appdir}/tools/lib/*.jar
 
 %dir %{_appdir}/tools/qemu
-%ifarch %{ix86}
-%dir %{_appdir}/tools/lib/x86
-%{_appdir}/tools/lib/monitor-x86
-%{_appdir}/tools/lib/x86/swt.jar
-%dir %{_appdir}/tools/lib/gles_mesa
-%attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libGL.so
-%attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libGL.so.1
-%attr(755,root,root) %{_appdir}/tools/lib/gles_mesa/libosmesa.so
-%dir %{_appdir}/tools/qemu/linux-x86
-%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-aarch64
-%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-mips64el
-%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86/qemu-system-x86_64
-%endif
-%ifarch %{x8664}
-%dir %{_appdir}/tools/lib/x86_64
-%{_appdir}/tools/lib/monitor-x86_64
-%{_appdir}/tools/lib/x86_64/swt.jar
-%dir %{_appdir}/tools/lib64
-%dir %{_appdir}/tools/lib64/gles_mesa
-%attr(755,root,root) %{_appdir}/tools/lib64/gles_mesa/libGL.so
-%attr(755,root,root) %{_appdir}/tools/lib64/gles_mesa/libGL.so.1
-%attr(755,root,root) %{_appdir}/tools/lib64/gles_mesa/libosmesa.so
-%attr(755,root,root) %{_appdir}/tools/lib64/lib64EGL_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib64/lib64GLES_CM_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib64/lib64GLES_V2_translator.so
-%attr(755,root,root) %{_appdir}/tools/lib64/lib64OpenglRender.so
-%attr(755,root,root) %{_appdir}/tools/lib64/lib64emugl_test_shared_library.so
-%dir %{_appdir}/tools/qemu/linux-x86_64
-%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86_64/qemu-system-aarch64
-%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86_64/qemu-system-mips64el
-%attr(755,root,root) %{_appdir}/tools/qemu/linux-x86_64/qemu-system-x86_64
-%endif
+
+%dir %{_appdir}/tools/lib/%{arch}
+%{_appdir}/tools/lib/monitor-%{arch}
+%dir %{_appdir}/tools/qemu/linux-%{arch}
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-%{arch}/qemu-system-aarch64
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-%{arch}/qemu-system-mips64el
+%attr(755,root,root) %{_appdir}/tools/qemu/linux-%{arch}/qemu-system-x86_64
+
+%{_appdir}/tools/lib/%{arch}/swt.jar
 %{_appdir}/tools/lib/android.el
 %{_appdir}/tools/lib/build.template
 %{_appdir}/tools/lib/devices.xml
@@ -138,11 +124,16 @@ rm -rf $RPM_BUILD_ROOT
 %if "%{_lib}" != "lib"
 %dir %{_appdir}/tools/%{_lib}
 %endif
-%attr(755,root,root) %{_appdir}/tools/%{_lib}/libEGL_translator.so
-%attr(755,root,root) %{_appdir}/tools/%{_lib}/libGLES_CM_translator.so
-%attr(755,root,root) %{_appdir}/tools/%{_lib}/libGLES_V2_translator.so
-%attr(755,root,root) %{_appdir}/tools/%{_lib}/libOpenglRender.so
-%attr(755,root,root) %{_appdir}/tools/%{_lib}/libemugl_test_shared_library.so
+%dir %{_appdir}/tools/%{_lib}/gles_mesa
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/gles_mesa/libGL.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/gles_mesa/libGL.so.1
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/gles_mesa/libosmesa.so
+
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/%{_lib}EGL_translator.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/%{_lib}GLES_CM_translator.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/%{_lib}GLES_V2_translator.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/%{_lib}OpenglRender.so
+%attr(755,root,root) %{_appdir}/tools/%{_lib}/%{_lib}emugl_test_shared_library.so
 
 %{_appdir}/tools/lib/build_gradle.template
 %{_appdir}/tools/lib/emulator/skins
