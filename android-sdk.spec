@@ -7,7 +7,6 @@
 #   http://dl.google.com/android/repository/build-tools_r22-linux.zip
 #   http://dl.google.com/android/repository/tools_r24.1.2-linux.zip
 #   http://dl.google.com/android/repository/platform-tools_r22-linux.zip
-%include	/usr/lib/rpm/macros.java
 Summary:	The Android SDK has all you need to create great apps to Android
 Name:		android-sdk
 Version:	24.3.3
